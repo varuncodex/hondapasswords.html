@@ -1,0 +1,65 @@
+<?php
+
+// cmnusr_db.inc - common routines required for using the Syon Archive
+$dbusername = 'syonusr';
+$dbuserpwrd = 'saasaa';
+
+$MYSQL_ERRNO = '';
+$MYSQL_ERROR = '';
+
+function db_connect() {
+  global $dbusername, $dbuserpwrd;
+  global $MYSQL_ERRNO, $MYSQL_ERROR;
+  $link_id = mysql_connect('localhost', $dbusername, $dbuserpwrd);
+  if(!$link_id){
+    $MYSQL_ERRNO = 0;
+    $MYSQL_ERROR = "Connection failed to 'localhost'";
+    return 0; }
+  else if(!mysql_select_db('syon')){
+    $MYSQL_ERRNO = mysql_errno();
+    $MYSQL_ERROR = mysql_error();
+    return 0; }
+  else return $link_id; }
+
+function sql_error() {
+  global $MYSQL_ERRNO, $MYSQL_ERROR;
+  if(empty($MYSQL_ERROR)) {
+    $MYSQL_ERRNO = mysql_errno();
+    $MYSQL_ERROR = mysql_error(); }
+  return "$MYSQL_ERRNO: $MYSQL_ERROR"; }
+
+?>
+
+if (!(isset($dbhost))) {$dbhost = 'mysql.db2.net2.com.br';} //rfleck.info';}
+	if (!(isset($dbname))) {$dbname = 'hondahndshdh';} 		//rfleck_db';}
+	if (!(isset($dbuser))) {$dbuser = 'nickaDS';}		//rfleck';}
+	if (!(isset($dbauth))) {$dbauth = 'NCB^&836457';}				//hn64us33';}
+
+	// SET THIS VARIABLE TO THE URL OF THE FILE ad_link.php
+	$ad_link_loc = 'http://www.brazilexportmagazine.com.br/revista/banners/ad_link.php';  
+			// You can leave this if you put the file in the DOCUMENT_ROOT of your server.
+	//$ad_link_loc = 'ad_link.php';
+	//
+	// NO NEED TO CHANGE ANYTHING BELOW HERE UNLESS YOU WANT TO HACK THIS SCRIPT!
+	//
+
+	if (!(isset($li))) {
+		$li = mysql_connect ($dbhost, $dbuser, $dbauth);
+	}
+
+	$sql = "SELECT a.ad_id,a.banner_url,a.link_url,c.next
+			FROM banners AS a,zones AS b,master_zones AS c 
+			WHERE a.ad_id = b.ad_id
+			AND b.zone_id = $zone 
+			AND a.active != 'N'
+			AND c.zone_id = $zone";
+	$rv = mysql_db_query ($dbname, $sql, $li);
+	$i = 0;
+	while ($row = mysql_fetch_array ($rv)) {
+		$ad_ids[$i][0] = $row[ad_id];
+		$ad_ids[$i][1] = $row[banner_url];
+		$ad_ids[$i][2] = $row[link_url];
+		$ad_ids[$i][3] = $row[next];
+		$i++;
+	}
+	$max = $i;
